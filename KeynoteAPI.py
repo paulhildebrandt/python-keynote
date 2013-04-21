@@ -86,8 +86,8 @@ class Slide(object):
             picture.display_y = float(_xpa(media_element, "sf:geometry/sf:position/@sfa:y"))
             picture.display_width = float(_xpa(media_element, "sf:geometry/sf:size/@sfa:w"))
             picture.display_height = float(_xpa(media_element, "sf:geometry/sf:size/@sfa:h"))
-            picture.natural_width = float(_xpa(media_element, "sf:geometry/sf:naturalSize/@sfa:w"))
-            picture.natural_height = float(_xpa(media_element, "sf:geometry/sf:naturalSize/@sfa:h"))
+            picture.natural_width = int(_xpa(media_element, "sf:geometry/sf:naturalSize/@sfa:w"))
+            picture.natural_height = int(_xpa(media_element, "sf:geometry/sf:naturalSize/@sfa:h"))
             self.__pictures.append(picture)
 
 
