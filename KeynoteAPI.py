@@ -1,5 +1,16 @@
+"""
+This module provides a pythonic interface to Apples Keynote 09 file format.
+It currently is a read only interface.
+"""
+# Requires Python 2.6
+
 import zipfile
 import lxml.etree
+
+# TODO:
+# find out what media really does and maybe get all media
+# extent is cropping, look into that
+#    print lxml.etree.tostring(data)
 
 
 def _xp(elem, path):
@@ -17,7 +28,9 @@ def _xpa(elem, path):
 
 
 def _get_element_text(element):
-    """ This removes the namespace text from the tag and just returns the tag text """
+    """ This removes the namespace text from the tag and just returns the tag
+        text
+    """
     tag = element.tag
     return tag[tag.index("}") + 1:]
 
@@ -36,6 +49,13 @@ def _get_element_lineage(element):
 
 
 class Picture(object):
+    """
+    This object holds attributes for images used in a keynote file.
+    """
+    # The pictures in a keynote document can be found using the following xpath
+    # "//key:presentation/key:slide-list/key:slide/key:page/sf:layers/" +
+    # "sf:layer/sf:drawables/sf:media/sf:content/sf:image-media/" +
+    # "sf:filtered-image/sf:unfiltered/sf:data"
     def __init__(self, root):
         self.root = root
         self.relative_path = None
@@ -51,6 +71,10 @@ class Picture(object):
 
 
 class Slide(object):
+    """
+    This object allows you to access Keynote Slide attributes and objects the
+    slide contains.
+    """
     def __init__(self, root):
         self.root = root
         self.__id = None
@@ -61,21 +85,29 @@ class Slide(object):
 
     @property
     def id(self):
+        """
+        Name of slide
+        """
         if not self.__id:
             self.__id = _xpa(self.root, "@sfa:ID")
         return self.__id
 
     @property
     def pictures(self):
+        """
+        List of picture objects that appear on the slide
+        """
         if not self.__pictures:
             self.__populate_pictures()
         return self.__pictures
 
     # TODO: Internalize this into the picture object
     def __populate_pictures(self):
-        """ Get the picture data out of the Keynote file and put it into our Python object"""
-        path_to_data = ".//key:page/sf:layers/sf:layer/sf:drawables/sf:media/sf:content/sf:image-media" \
-                       "/sf:filtered-image/sf:unfiltered/sf:data"
+        """ Get the picture data out of the Keynote file and put it into
+            our Python object
+        """
+        path_to_data = ".//key:page/sf:layers/sf:layer/sf:drawables/sf:media"\
+            "/sf:content/sf:image-media/sf:filtered-image/sf:unfiltered/sf:data"
         self.data = _xp(self.root, path_to_data)
         for element in self.data:
             picture = Picture(element)
@@ -93,7 +125,7 @@ class Slide(object):
 
 class Keynote(object):
     """
-    Class to make the Apple Keynote pythonic
+    Class to make the Apple Keynote file Pythonic
     """
     def __init__(self, path):
         self.path = path
@@ -103,6 +135,9 @@ class Keynote(object):
 
     @property
     def size(self):
+        """ Returns text representation of size of file in (widthxheight) format.
+         Example: "(1920X1024)"
+        """
         if not self.__size:
             width = _xpa(self.doc.getroot(), "//key:presentation/key:size/@sfa:w")
             height = _xpa(self.doc.getroot(), "//key:presentation/key:size/@sfa:h")
@@ -111,6 +146,9 @@ class Keynote(object):
 
     @property
     def slides(self):
+        """
+        List of slide objects in the presentation.
+        """
         if not self.__slides:
             self.__populate_slides()
         return self.__slides
@@ -120,18 +158,3 @@ class Keynote(object):
         for slide_root in slide_roots:
             slide = Slide(slide_root)
             self.__slides.append(slide)
-
-
-    # TODO:
-    # find out what media really does and maybe get all media
-    # extent is cropping, look into that
-
-
-
-    #for data in keynote.data:
-    #    print("Path: %s" % _xp(data, "@sf:path"))
-    #    print lxml.etree.tostring(data)
-    #print(_xp(keynote.data[0].attrib, '@sf:path'))
-    # Path to image path
-    #self.data = _xp(self.doc.getroot(), "//key:presentation/key:slide-list/key:slide/key:page/sf:layers/sf:layer/sf:drawables/sf:media/sf:content/sf:image-media/sf:filtered-image/sf:unfiltered/sf:data")
-
