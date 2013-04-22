@@ -1,16 +1,18 @@
 """
-This module provides a pythonic interface to Apples Keynote 09 file format.
+KeynoteAPI
+~~~~~~~~~~
+
+Pythonic interface to Apples Keynote 09 file format.
+
 It currently is a read only interface.
+
+Requires Python 2.6
+
+:license: MIT, see LICENSE for more details.
 """
-# Requires Python 2.6
 
 import zipfile
 import lxml.etree
-
-# TODO:
-# find out what media really does and maybe get all media
-# extent is cropping, look into that
-#    print lxml.etree.tostring(data)
 
 
 def _xp(elem, path):
@@ -49,8 +51,8 @@ def _get_element_lineage(element):
 
 
 class Picture(object):
-    """
-    This object holds attributes for images used in a keynote file.
+    """This object holds attributes for images used in a keynote file.
+
     """
     # The pictures in a keynote document can be found using the following xpath
     # "//key:presentation/key:slide-list/key:slide/key:page/sf:layers/" +
@@ -58,13 +60,13 @@ class Picture(object):
     # "sf:filtered-image/sf:unfiltered/sf:data"
     def __init__(self, root):
         self.root = root
-        self.relative_path = None
-        self.natural_width = None
-        self.natural_height = None
-        self.display_width = None
-        self.display_height = None
-        self.display_x = None
-        self.display_y = None
+        self.relative_path = None  #: Path including name of the image
+        self.natural_width = None  #: Width of picture as it was when imported into Keynote
+        self.natural_height = None  #: Height of picture as it was when imported into Keynote
+        self.display_width = None  #: Width of picture displayed in slide
+        self.display_height = None  #: Height of picture displayed in slide
+        self.display_x = None  #: Upper right corner X coordinate of picture on slide
+        self.display_y = None  #: Upper right corner Y coordinate of picture on slide
         self.keynote_path = ""
 
     def __repr__(self):
@@ -78,7 +80,7 @@ class Picture(object):
         was dropped on the keynote file because keynote renames them to
         droppedImage<xx>.<ext>  which isn't very helpful.
 
-        @param directory where to put the image.
+        :param directory: dir where to put the image.
         """
         # Is it a problem that we do this for each picture?
         # Maybe we need a method on the slide to save all pictures.
@@ -146,14 +148,15 @@ class Keynote(object):
     Class to make the Apple Keynote file Pythonic
     """
     def __init__(self, path):
-        self.path = path
+        self.path = path  #: Path on disk to the keynote file.
         self.doc = lxml.etree.parse(zipfile.ZipFile(path).open('index.apxl'))
         self.__size = None
         self.__slides = []
 
     @property
     def size(self):
-        """ Returns text representation of size of file in (widthxheight) format.
+        """ Text representation of size of file in (widthxheight) format.
+
          Example: "(1920X1024)"
         """
         if not self.__size:
