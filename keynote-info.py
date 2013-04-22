@@ -26,3 +26,5 @@ if __name__ == "__main__":
             print("        display_height : %s" % picture.display_height)
             print("        display_x      : %s" % picture.display_x)
             print("        display_y      : %s" % picture.display_y)
+            picture.save_as()
+            print("Picture saved")

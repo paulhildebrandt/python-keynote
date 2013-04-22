@@ -65,9 +65,25 @@ class Picture(object):
         self.display_height = None
         self.display_x = None
         self.display_y = None
+        self.keynote_path = ""
 
     def __repr__(self):
         return str(self.__dict__)
+
+    def save_as(self, directory=""):
+        """
+        Save the picture to the given path.
+
+        The image will retain its name.  This may be confusing if the image
+        was dropped on the keynote file because keynote renames them to
+        droppedImage<xx>.<ext>  which isn't very helpful.
+
+        @param directory where to put the image.
+        """
+        # Is it a problem that we do this for each picture?
+        # Maybe we need a method on the slide to save all pictures.
+        keynote_file = zipfile.ZipFile(self.keynote_path)
+        keynote_file.extract(self.relative_path, directory)
 
 
 class Slide(object):
@@ -79,6 +95,7 @@ class Slide(object):
         self.root = root
         self.__id = None
         self.__pictures = []
+        self.keynote_path = ""
 
     def __repr__(self):
         return str(self.__dict__)
@@ -120,6 +137,7 @@ class Slide(object):
             picture.display_height = float(_xpa(media_element, "sf:geometry/sf:size/@sfa:h"))
             picture.natural_width = int(_xpa(media_element, "sf:geometry/sf:naturalSize/@sfa:w"))
             picture.natural_height = int(_xpa(media_element, "sf:geometry/sf:naturalSize/@sfa:h"))
+            picture.keynote_path = self.keynote_path
             self.__pictures.append(picture)
 
 
@@ -157,4 +175,5 @@ class Keynote(object):
         slide_roots = _xp(self.doc.getroot(), "//key:slide ")
         for slide_root in slide_roots:
             slide = Slide(slide_root)
+            slide.keynote_path = self.path
             self.__slides.append(slide)
