@@ -1,0 +1,4 @@
+- Find out what media really does and maybe get all media
+- Extent is cropping, look into that.  Is it masking?
+- Figure out the layering of pictures.  What is on top?
+- Consider making helper function for printing using lxml.etree.tostring(data)
