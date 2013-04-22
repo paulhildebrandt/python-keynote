@@ -3,6 +3,7 @@ from unittest import TestCase
 
 from KeynoteAPI import Keynote
 
+TEST_IMG = "IMG_2274-1.jpg"
 
 def _get_fixture_path(name):
     return os.path.join(os.path.abspath(os.path.dirname(__file__)), name)
@@ -19,13 +20,18 @@ class TestPicture(TestCase):
 
     def test_picture_properties(self):
         picture = self.slide.pictures[0]
-        self.assertEquals(picture.relative_path, "IMG_2274-1.jpg")
+        self.assertEquals(picture.relative_path, TEST_IMG)
         self.assertEquals(picture.natural_width, 1920)
         self.assertEquals(picture.natural_height, 2570)
         self.assertEquals(picture.display_width, 507.2684020996094)
         self.assertEquals(picture.display_height, 678.9998779296875)
         self.assertEquals(picture.display_x, 37.0)
         self.assertEquals(picture.display_y, -33.0)
+
+    def test_saveas(self):
+        picture = self.slide.pictures[0]
+        picture.save_as()
+        os.remove(TEST_IMG)
 
 
 class TestSlide(TestCase):
