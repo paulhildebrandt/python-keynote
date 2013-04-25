@@ -5,6 +5,7 @@ from KeynoteAPI import Keynote
 
 TEST_IMG = "IMG_2274-1.jpg"
 
+
 def _get_fixture_path(name):
     return os.path.join(os.path.abspath(os.path.dirname(__file__)), name)
 
@@ -16,7 +17,6 @@ class TestPicture(TestCase):
 
     def test_picture_count(self):
         self.assertEquals = self.slide.pictures[0]
-
 
     def test_picture_properties(self):
         picture = self.slide.pictures[0]
@@ -31,6 +31,7 @@ class TestPicture(TestCase):
     def test_saveas(self):
         picture = self.slide.pictures[0]
         picture.save_as()
+        self.assertTrue(os.path.exists(TEST_IMG))
         os.remove(TEST_IMG)
 
 
@@ -51,4 +52,3 @@ class TestKeynote(TestCase):
 
     def test_size(self):
         self.assertEquals(self.keynote.size, "1920x1080")
-
