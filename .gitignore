@@ -3,3 +3,4 @@
 *.pyc
 .coverage
 _*
+*.app
