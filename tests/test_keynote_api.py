@@ -1,7 +1,7 @@
 import os
 from unittest import TestCase
 
-from KeynoteAPI import Keynote
+from keynote_api import Keynote
 
 TEST_IMG = "IMG_2274-1.jpg"
 

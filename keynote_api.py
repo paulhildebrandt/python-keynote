@@ -1,5 +1,5 @@
 """
-KeynoteAPI
+keynote_api
 ~~~~~~~~~~
 
 Pythonic interface to Apples Keynote 09 file format.
@@ -10,6 +10,7 @@ Requires Python 2.6
 
 :license: MIT, see LICENSE for more details.
 """
+__version__ = "0.5"
 
 import zipfile
 import lxml.etree
@@ -72,7 +73,7 @@ class Picture(object):
     def __repr__(self):
         return str(self.__dict__)
 
-    def save_as(self, directory=""):
+    def export(self, directory):
         """
         Save the picture to the given path.
 

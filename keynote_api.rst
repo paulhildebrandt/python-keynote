@@ -1,7 +1,7 @@
-KeynoteAPI Module
+python-keynote Module
 =================
 
-.. automodule:: KeynoteAPI
+.. automodule:: python-keynote
     :members:
     :undoc-members:
     :show-inheritance:

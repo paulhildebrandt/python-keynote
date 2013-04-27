@@ -1,7 +1,7 @@
 python-keynote
 ==============
 
-python-keynote contains KeynoteAPI a very simple Apple Keynote 09 file reader.
+python-keynote contains keynote_api a very simple Apple Keynote 09 file reader.
 
 My current goal was to read all the pictures out of a keynote file and
 figure out their sizes.  I wrote enough to do that but tried to keep
@@ -15,7 +15,7 @@ It only works on Apple Keynote 09 files.
 I wrote this on Python 2.7 and know it at least works there.
 
 The idea is to present a Keynote file as series of nested Python objects.
-KeynoteAPI contains three classes and a few helper functions.
+keynote_api contains three classes and a few helper functions.
 * keynote: The keynote document object.  It contains slides.
 * slide: The slide object is really only useful to group pictures.
 * picture: The picture object holds sizing and position information.
