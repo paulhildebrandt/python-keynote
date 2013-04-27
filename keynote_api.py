@@ -151,20 +151,31 @@ class Keynote(object):
     def __init__(self, path):
         self.path = path  #: Path on disk to the keynote file.
         self.doc = lxml.etree.parse(zipfile.ZipFile(path).open('index.apxl'))
-        self.__size = None
+        self.__width = None
+        self.__height = None
         self.__slides = []
 
     @property
-    def size(self):
-        """ Text representation of size of file in (widthxheight) format.
+    def width(self):
+        """ Width of the presentation in pixels.
 
-         Example: "(1920X1024)"
+         Example: 1920
         """
-        if not self.__size:
-            width = _xpa(self.doc.getroot(), "//key:presentation/key:size/@sfa:w")
-            height = _xpa(self.doc.getroot(), "//key:presentation/key:size/@sfa:h")
-            self.__size = width + "x" + height
-        return self.__size
+        if not self.__width:
+            self.__width = int(_xpa(self.doc.getroot(),
+                                    "//key:presentation/key:size/@sfa:w"))
+        return self.__width
+
+    @property
+    def height(self):
+        """ Height of the presentation in pixels.
+
+         Example: 1024
+        """
+        if not self.__height:
+            self.__height = int(_xpa(self.doc.getroot(),
+                                     "//key:presentation/key:size/@sfa:h"))
+        return self.__height
 
     @property
     def slides(self):

@@ -14,7 +14,7 @@ if __name__ == "__main__":
     keynote_file = sys.argv[1]
 
     keynote = Keynote(keynote_file)
-    print("Keynote Size: %s" % keynote.size)
+    print("Keynote Size: %sx%s" % (keynote.width, keynote.height))
     print("Number of slides: %s" % len(keynote.slides))
     for i, slide in enumerate(keynote.slides):
         print("Slide %s: %s" % (i, slide.id))
@@ -26,5 +26,4 @@ if __name__ == "__main__":
             print("        display_height : %s" % picture.display_height)
             print("        display_x      : %s" % picture.display_x)
             print("        display_y      : %s" % picture.display_y)
-            picture.export(".")
-            print("Picture saved")
+
