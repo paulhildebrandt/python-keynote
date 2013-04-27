@@ -2,8 +2,10 @@
 
 from distutils.core import setup
 
+from keynote_api import __version__
+
 setup(name = 'python-keynote',
-      version = '0.5',
+      version = __version__,
       description = 'Apple Keynote 09 Parser',
       license = 'MIT',
       author = 'Paul Hildebrandt',
