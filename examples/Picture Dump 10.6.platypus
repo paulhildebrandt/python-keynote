@@ -12,9 +12,9 @@
 	<string>Paul Hildebrandt</string>
 	<key>BundledFiles</key>
 	<array>
-		<string>/Library/Python/2.7/site-packages/lxml</string>
+		<string>/Library/Python/2.6/site-packages/lxml</string>
 		<string>../keynote_api.py</string>
-		<string>/Library/Python/2.7/site-packages/PIL</string>
+		<string>/Library/Python/2.6/site-packages/PIL</string>
 	</array>
 	<key>Creator</key>
 	<string>Platypus-4.7</string>
