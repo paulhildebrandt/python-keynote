@@ -73,8 +73,11 @@ if __name__ == "__main__":
             picture.export(slide_folder)
             if args.resize:
                 # Resize picture to match keynote display size
-                img = Image.open(picture_path)
-                img = img.resize((int(picture.display_width * sizing_factor),
-                                 int(picture.display_height * sizing_factor)),
-                                 Image.ANTIALIAS)
-                img.save(picture_path)
+                try:
+                    img = Image.open(picture_path)
+                    img = img.resize((int(picture.display_width * sizing_factor),
+                        int(picture.display_height * sizing_factor)),
+                        Image.ANTIALIAS)
+                    img.save(picture_path)
+                except IOError, errObj:
+                    print('ERROR: Unable to resize %s. %s' % (picture_path, errObj))
