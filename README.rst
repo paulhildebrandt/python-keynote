@@ -24,7 +24,7 @@ Here is a code snippet that demonstrates the library.  It is included as
 a working program, keynote-info.py, in the examples directory.
 
     keynote = Keynote(keynote_file)
-    print("Keynote Size: %s" % keynote.size)
+    print("Keynote Size: %sx%s" % (keynote.width, keynote.height))
     print("Number of slides: %s" % len(keynote.slides))
     for i, slide in enumerate(keynote.slides):
         print("Slide %s: %s" % (i, slide.id))
@@ -36,5 +36,5 @@ a working program, keynote-info.py, in the examples directory.
             print("        display_height : %s" % picture.display_height)
             print("        display_x      : %s" % picture.display_x)
             print("        display_y      : %s" % picture.display_y)
-            picture.save_as()
+            picture.export(".")
             print("Picture saved")
