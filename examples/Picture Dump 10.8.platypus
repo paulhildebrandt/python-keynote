@@ -60,7 +60,9 @@
 	<key>Role</key>
 	<string>Viewer</string>
 	<key>ScriptArgs</key>
-	<array/>
+	<array>
+		<string>--resize</string>
+	</array>
 	<key>ScriptPath</key>
 	<string>picture-dump.py</string>
 	<key>Secure</key>
