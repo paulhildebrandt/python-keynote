@@ -8,6 +8,8 @@ This example relies on having PIL installed.
 """
 import os
 import sys
+import argparse
+
 
 try:
     import Image
@@ -21,19 +23,20 @@ from keynote_api import Keynote
 DPI = 72  # printing dots per inch
 
 if __name__ == "__main__":
-    if len(sys.argv) not in [2, 3]:
-        print("Usage: picture-dump.py <filename.key> [--resize]")
-        sys.exit()
-    keynote_file = sys.argv[1]
-    resize = False
-    if len(sys.argv) > 2 and sys.argv[2] == "--resize":
-        if PIL_exists:
-            resize = True
-        else:
+    parser = argparse.ArgumentParser(description='Keynote Picture Extractor')
+    parser.add_argument('--resize', action="store_true", default=False,
+                        help='resize the pictures to match board dimensions.')
+    parser.add_argument('keynote_filename', action="store",
+                        help='Name of Apple Keynote 09 file.')
+    args = parser.parse_args()
+
+    if args.resize:
+        if not PIL_exists:
+            args.resize = False
             print("PIL isn't installed.  I can't resize images")
 
-    keynote = Keynote(keynote_file)
-    if resize:
+    keynote = Keynote(args.keynote_filename)
+    if args.resize:
         aspect_ratio = keynote.width / float(keynote.height)
         if aspect_ratio > 1.7:
             board_width = 90  # inches
@@ -42,9 +45,9 @@ if __name__ == "__main__":
             board_width = 45  # inches
             print("Working with a half board.")
         sizing_factor = (board_width * DPI) / float(keynote.width)
-    folder_name, dummy_ext = os.path.splitext(os.path.basename(keynote_file))
+    folder_name, dummy_ext = os.path.splitext(os.path.basename(args.keynote_filename))
     folder_name += "-pictures"
-    folder_name = os.path.join(os.path.dirname(keynote_file), folder_name)
+    folder_name = os.path.join(os.path.dirname(args.keynote_filename), folder_name)
     if os.path.exists(folder_name):
         print("Looks like %s already exists.  Please delete or move it aside."
               % folder_name)
@@ -68,7 +71,7 @@ if __name__ == "__main__":
             picture_path = os.path.join(slide_folder, picture.relative_path)
             print("Saving Picture: %s" % picture_path)
             picture.export(slide_folder)
-            if resize:
+            if args.resize:
                 # Resize picture to match keynote display size
                 img = Image.open(picture_path)
                 img = img.resize((int(picture.display_width * sizing_factor),
