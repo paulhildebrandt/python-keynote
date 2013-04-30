@@ -23,6 +23,8 @@ keynote_api contains three classes and a few helper functions.
 Here is a code snippet that demonstrates the library.  It is included as
 a working program, keynote-info.py, in the examples directory.
 
+.. code-block:: python
+
     keynote = Keynote(keynote_file)
     print("Keynote Size: %sx%s" % (keynote.width, keynote.height))
     print("Number of slides: %s" % len(keynote.slides))
