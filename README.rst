@@ -16,9 +16,10 @@ I wrote this on Python 2.7 and know it at least works there.
 
 The idea is to present a Keynote file as series of nested Python objects.
 keynote_api contains three classes and a few helper functions.
-* keynote: The keynote document object.  It contains slides.
-* slide: The slide object is really only useful to group pictures.
-* picture: The picture object holds sizing and position information.
+
+- keynote: The keynote document object.  It contains slides.
+- slide: The slide object is really only useful to group pictures.
+- picture: The picture object holds sizing and position information.
 
 Here is a code snippet that demonstrates the library.  It is included as
 a working program, keynote-info.py, in the examples directory.
