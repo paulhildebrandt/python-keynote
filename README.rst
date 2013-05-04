@@ -8,7 +8,7 @@ figure out their sizes.  I wrote enough to do that but tried to keep
 it general.  I hope to expand on it later but thought I would publish
 what I had now.
 
-I hope that maybe 4 people fine this handy. ;-)
+I hope that maybe 4 people find this handy. ;-)
 
 It only works on Apple Keynote 09 files.
 
