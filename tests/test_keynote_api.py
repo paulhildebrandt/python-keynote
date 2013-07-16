@@ -10,13 +10,25 @@ def _get_fixture_path(name):
     return os.path.join(os.path.abspath(os.path.dirname(__file__)), name)
 
 
+class TestMovie(TestCase):
+    def setUp(self):
+        self.keynote = Keynote(_get_fixture_path("test.key"))
+        self.slide = self.keynote.slides[0]
+
+    def test_picture_count(self):
+        print(self.slide.id)
+        print(self.slide.pictures)
+        print(self.slide.movies)
+        self.assertEquals(len(self.slide.movies), 1)
+
+
 class TestPicture(TestCase):
     def setUp(self):
         self.keynote = Keynote(_get_fixture_path("test.key"))
         self.slide = self.keynote.slides[1]
 
     def test_picture_count(self):
-        self.assertEquals = self.slide.pictures[0]
+        self.assertEquals(len(self.slide.pictures), 3)
 
     def test_picture_properties(self):
         picture = self.slide.pictures[0]

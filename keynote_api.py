@@ -90,6 +90,42 @@ class Picture(object):
         keynote_file.extract(self.relative_path, directory)
 
 
+class Movie(object):
+    """This object holds attributes for images used in a keynote file.
+
+    """
+    def __init__(self, root):
+        self.root = root
+        self.poster_frame_path = None  #: Path to the poster frame (thumbnail) for the movie
+        self.relative_path = None  #: Path including name of the image
+        self.natural_width = None  #: Width of picture as it was when imported into Keynote
+        self.natural_height = None  #: Height of picture as it was when imported into Keynote
+        self.display_width = None  #: Width of picture displayed in slide
+        self.display_height = None  #: Height of picture displayed in slide
+        self.display_x = None  #: Upper right corner X coordinate of picture on slide
+        self.display_y = None  #: Upper right corner Y coordinate of picture on slide
+        self.rotate_angle = None
+        self.keynote_path = ""
+
+    def __repr__(self):
+        return str(self.__dict__)
+
+    def export(self, directory):
+        """
+        Save the picture to the given path.
+
+        The image will retain its name.  This may be confusing if the image
+        was dropped on the keynote file because keynote renames them to
+        droppedImage<xx>.<ext>  which isn't very helpful.
+
+        :param directory: dir where to put the image.
+        """
+        # Is it a problem that we do this for each picture?
+        # Maybe we need a method on the slide to save all pictures.
+        keynote_file = zipfile.ZipFile(self.keynote_path)
+        keynote_file.extract(self.relative_path, directory)
+
+
 class Slide(object):
     """
     This object allows you to access Keynote Slide attributes and objects the
@@ -99,6 +135,7 @@ class Slide(object):
         self.root = root
         self.__id = None
         self.__pictures = []
+        self.__movies = []
         self.keynote_path = ""
 
     def __repr__(self):
@@ -122,6 +159,15 @@ class Slide(object):
             self.__populate_pictures()
         return self.__pictures
 
+    @property
+    def movies(self):
+        """
+        List of movie objects that appear on the slide
+        """
+        if not self.__movies:
+            self.__populate_movies()
+        return self.__movies
+
     # TODO: Internalize this into the picture object
     def __populate_pictures(self):
         """ Get the picture data out of the Keynote file and put it into
@@ -144,6 +190,29 @@ class Slide(object):
             picture.rotate_angle = _xpa(media_element, "sf:geometry/@sf:angle")
             picture.keynote_path = self.keynote_path
             self.__pictures.append(picture)
+
+    def __populate_movies(self):
+        """ Get the movie data out of the Keynote file and put it into
+            our Python object
+        """
+        path_to_data = ".//key:page/sf:layers/sf:layer/sf:drawables/sf:media"\
+            "/sf:content/sf:movie-media/sf:external-movie/sf:main-movie"
+        self.data = _xp(self.root, path_to_data)
+        for element in self.data:
+            movie = Movie(element)
+            movie.relative_path = _xp(element, "@sf:path")[0]
+            # this is perfectly fine... nothing to worry about here... :-(
+            media_element = element.getparent().getparent().getparent().getparent()
+            movie.poster_frame_path = _xpa(media_element, "sf:content/sf:movie-media/sf:poster-image/sf:data/@sf:path")
+            movie.display_x = float(_xpa(media_element, "sf:geometry/sf:position/@sfa:x"))
+            movie.display_y = float(_xpa(media_element, "sf:geometry/sf:position/@sfa:y"))
+            movie.display_width = float(_xpa(media_element, "sf:geometry/sf:size/@sfa:w"))
+            movie.display_height = float(_xpa(media_element, "sf:geometry/sf:size/@sfa:h"))
+            movie.natural_width = int(_xpa(media_element, "sf:geometry/sf:naturalSize/@sfa:w"))
+            movie.natural_height = int(_xpa(media_element, "sf:geometry/sf:naturalSize/@sfa:h"))
+            movie.rotate_angle = _xpa(media_element, "sf:geometry/@sf:angle")
+            movie.keynote_path = self.keynote_path
+            self.__movies.append(movie)
 
 
 class Keynote(object):

@@ -27,4 +27,14 @@ if __name__ == "__main__":
             print("        display_x      : %s" % picture.display_x)
             print("        display_y      : %s" % picture.display_y)
             print("        rotate_angle   : %s" % picture.rotate_angle)
+        for j, movie in enumerate(slide.movies):
+            print("    Movie %s : %s" % (j, movie.relative_path))
+            print("        poster_frame_path : %s" % movie.poster_frame_path)
+            print("        natural_width  : %s" % movie.natural_width)
+            print("        natural_height : %s" % movie.natural_height)
+            print("        display_width  : %s" % movie.display_width)
+            print("        display_height : %s" % movie.display_height)
+            print("        display_x      : %s" % movie.display_x)
+            print("        display_y      : %s" % movie.display_y)
+            print("        rotate_angle   : %s" % movie.rotate_angle)
 
