@@ -34,13 +34,25 @@ class TestPicture(TestCase):
         self.assertTrue(os.path.exists(TEST_IMG))
         os.remove(TEST_IMG)
 
+#    def test_2nd_picture(self):
+#        self.slide = self.keynote.slides[2]
+#        self.assertTrue(len(self.slide.pictures) == 1)
+
+    def test_angle_picture(self):
+        """ This tests if we can get the picture angle (rotate) """
+        rotated_picture_name = "IMG_2259.jpg"
+        for picture in self.slide.pictures:
+            if picture.relative_path == rotated_picture_name:
+                picture = self.slide.pictures[0]
+                self.assertTrue(picture.rotate_angle, 90)
+                break
 
 class TestSlide(TestCase):
     def setUp(self):
         self.keynote = Keynote(_get_fixture_path("test.key"))
 
     def test_count(self):
-        self.assertEquals(len(self.keynote.slides), 2)
+        self.assertEquals(len(self.keynote.slides), 3)
 
     def test_id(self):
         self.assertEquals(self.keynote.slides[0].id, "BGSlide-0")

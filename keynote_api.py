@@ -68,6 +68,7 @@ class Picture(object):
         self.display_height = None  #: Height of picture displayed in slide
         self.display_x = None  #: Upper right corner X coordinate of picture on slide
         self.display_y = None  #: Upper right corner Y coordinate of picture on slide
+        self.rotate_angle = None
         self.keynote_path = ""
 
     def __repr__(self):
@@ -140,6 +141,7 @@ class Slide(object):
             picture.display_height = float(_xpa(media_element, "sf:geometry/sf:size/@sfa:h"))
             picture.natural_width = int(_xpa(media_element, "sf:geometry/sf:naturalSize/@sfa:w"))
             picture.natural_height = int(_xpa(media_element, "sf:geometry/sf:naturalSize/@sfa:h"))
+            picture.rotate_angle = _xpa(media_element, "sf:geometry/@sf:angle")
             picture.keynote_path = self.keynote_path
             self.__pictures.append(picture)
 
