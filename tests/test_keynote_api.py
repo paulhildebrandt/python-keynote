@@ -46,9 +46,9 @@ class TestPicture(TestCase):
         self.assertTrue(os.path.exists(TEST_IMG))
         os.remove(TEST_IMG)
 
-#    def test_2nd_picture(self):
-#        self.slide = self.keynote.slides[2]
-#        self.assertTrue(len(self.slide.pictures) == 1)
+    def test_2nd_picture(self):
+        self.slide = self.keynote.slides[2]
+        self.assertTrue(len(self.slide.pictures) == 1)
 
     def test_angle_picture(self):
         """ This tests if we can get the picture angle (rotate) """

@@ -61,6 +61,7 @@ class Picture(object):
     # "sf:filtered-image/sf:unfiltered/sf:data"
     def __init__(self, root):
         self.root = root
+        self.unfiltered_id = None  #: Used in keynote file to id an image.  We use it to track multiple occurances.
         self.relative_path = None  #: Path including name of the image
         self.natural_width = None  #: Width of picture as it was when imported into Keynote
         self.natural_height = None  #: Height of picture as it was when imported into Keynote
@@ -132,6 +133,7 @@ class Slide(object):
     slide contains.
     """
     def __init__(self, root):
+        self.deck = None  #: The keynote deck that is the slides parent
         self.root = root
         self.__id = None
         self.__pictures = []
@@ -181,15 +183,32 @@ class Slide(object):
             picture.relative_path = _xp(element, "@sf:path")[0]
             # this is perfectly fine... nothing to worry about here... :-(
             media_element = element.getparent().getparent().getparent().getparent().getparent()
+            picture.unfiltered_id = _xpa(media_element, "sf:content/sf:image-media/sf:filtered-image/sf:unfiltered/@sfa:ID")
             picture.display_x = float(_xpa(media_element, "sf:geometry/sf:position/@sfa:x"))
             picture.display_y = float(_xpa(media_element, "sf:geometry/sf:position/@sfa:y"))
             picture.display_width = float(_xpa(media_element, "sf:geometry/sf:size/@sfa:w"))
             picture.display_height = float(_xpa(media_element, "sf:geometry/sf:size/@sfa:h"))
             picture.natural_width = int(_xpa(media_element, "sf:geometry/sf:naturalSize/@sfa:w"))
             picture.natural_height = int(_xpa(media_element, "sf:geometry/sf:naturalSize/@sfa:h"))
-            picture.rotate_angle = _xpa(media_element, "sf:geometry/@sf:angle")
+            picture.rotate_angle = _xpa(media_element, "sf:geometry/sf:angle")
             picture.keynote_path = self.keynote_path
             self.__pictures.append(picture)
+        # Now go find all the duplicates of those pictures.
+        # This is an image reference.  It's used the second time an image appears in a deck
+        #     <sf:unfiltered-ref sfa:IDREF="SFRImageBinary-24"/>
+        # We are not tracking that these pictures are duplicate because I can't
+        # think of a reason to care
+        path_to_duplicates = ".//key:page/sf:layers/sf:layer/sf:drawables/sf:media"\
+            "/sf:content/sf:image-media/sf:filtered-image/sf:unfiltered-ref"
+        duplicates = _xp(self.root, path_to_duplicates)
+        for duplicate in duplicates:
+            picture = Picture(duplicate)
+            picture.unfiltered_id = _xpa(duplicate, "@sfa:IDREF")
+            print(picture.unfiltered_id)
+
+
+
+
 
     def __populate_movies(self):
         """ Get the movie data out of the Keynote file and put it into
@@ -261,5 +280,8 @@ class Keynote(object):
         slide_roots = _xp(self.doc.getroot(), "//key:slide ")
         for slide_root in slide_roots:
             slide = Slide(slide_root)
+            slide.deck = self
+            #TODO: remove and just use deck reference?
+            #      What to do about duplicate pictures though
             slide.keynote_path = self.path
             self.__slides.append(slide)

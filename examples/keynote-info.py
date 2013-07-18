@@ -4,8 +4,10 @@ This file dumps everything the KeynoteAPI library knows about a keynote file.
 """
 import sys
 
+sys.path.extend(['/Users/paulh/dev/python-keynote'])
 from keynote_api import Keynote
-
+import keynote_api
+print(keynote_api)
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
@@ -20,6 +22,7 @@ if __name__ == "__main__":
         print("Slide %s: %s" % (i, slide.id))
         for j, picture in enumerate(slide.pictures):
             print("    Picture %s : %s" % (j, picture.relative_path))
+            print("        unfiltered_id  : %s" % picture.unfiltered_id)
             print("        natural_width  : %s" % picture.natural_width)
             print("        natural_height : %s" % picture.natural_height)
             print("        display_width  : %s" % picture.display_width)
