@@ -4,10 +4,7 @@ This file dumps everything the KeynoteAPI library knows about a keynote file.
 """
 import sys
 
-sys.path.extend(['/Users/paulh/dev/python-keynote'])
 from keynote_api import Keynote
-import keynote_api
-print(keynote_api)
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:

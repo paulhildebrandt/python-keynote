@@ -1,6 +1,4 @@
 - Find out what media really does and maybe get all media
-- Handle more than one instance of a picture in a presentation
 - Extent is cropping, look into that.  Is it masking?
-- Figure out the layering of pictures.  What is on top?
 - Consider making helper function for printing using lxml.etree.tostring(data)
-- Support .mov files.
+- Make the pictures list order reflect the visual layering on the slide
