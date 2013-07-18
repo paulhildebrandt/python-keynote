@@ -136,7 +136,7 @@ class Slide(object):
         self.deck = None  #: The keynote deck that is the slides parent
         self.root = root
         self.__id = None
-        self.__pictures = []
+        self._pictures = []
         self.__movies = []
         self.keynote_path = ""
 
@@ -157,9 +157,9 @@ class Slide(object):
         """
         List of picture objects that appear on the slide
         """
-        if not self.__pictures:
+        if not self._pictures:
             self.__populate_pictures()
-        return self.__pictures
+        return self._pictures
 
     @property
     def movies(self):
@@ -183,7 +183,8 @@ class Slide(object):
             picture.relative_path = _xp(element, "@sf:path")[0]
             # this is perfectly fine... nothing to worry about here... :-(
             media_element = element.getparent().getparent().getparent().getparent().getparent()
-            picture.unfiltered_id = _xpa(media_element, "sf:content/sf:image-media/sf:filtered-image/sf:unfiltered/@sfa:ID")
+            picture.unfiltered_id = _xpa(media_element,
+                                         "sf:content/sf:image-media/sf:filtered-image/sf:unfiltered/@sfa:ID")
             picture.display_x = float(_xpa(media_element, "sf:geometry/sf:position/@sfa:x"))
             picture.display_y = float(_xpa(media_element, "sf:geometry/sf:position/@sfa:y"))
             picture.display_width = float(_xpa(media_element, "sf:geometry/sf:size/@sfa:w"))
@@ -192,7 +193,7 @@ class Slide(object):
             picture.natural_height = int(_xpa(media_element, "sf:geometry/sf:naturalSize/@sfa:h"))
             picture.rotate_angle = _xpa(media_element, "sf:geometry/sf:angle")
             picture.keynote_path = self.keynote_path
-            self.__pictures.append(picture)
+            self._pictures.append(picture)
         # Now go find all the duplicates of those pictures.
         # This is an image reference.  It's used the second time an image appears in a deck
         #     <sf:unfiltered-ref sfa:IDREF="SFRImageBinary-24"/>
@@ -202,13 +203,24 @@ class Slide(object):
             "/sf:content/sf:image-media/sf:filtered-image/sf:unfiltered-ref"
         duplicates = _xp(self.root, path_to_duplicates)
         for duplicate in duplicates:
-            picture = Picture(duplicate)
-            picture.unfiltered_id = _xpa(duplicate, "@sfa:IDREF")
-            print(picture.unfiltered_id)
-
-
-
-
+            unfiltered_id = _xpa(duplicate, "@sfa:IDREF")
+            media_element = duplicate.getparent().getparent().getparent().getparent()
+            previous_pictures = self.deck.pictures
+            for previous_picture in previous_pictures:
+                if previous_picture.unfiltered_id == unfiltered_id:
+                    picture = Picture(duplicate)
+                    picture.relative_path = previous_picture.relative_path
+                    picture.unfiltered_id = unfiltered_id
+                    picture.display_x = float(_xpa(media_element, "sf:geometry/sf:position/@sfa:x"))
+                    picture.display_y = float(_xpa(media_element, "sf:geometry/sf:position/@sfa:y"))
+                    picture.display_width = float(_xpa(media_element, "sf:geometry/sf:size/@sfa:w"))
+                    picture.display_height = float(_xpa(media_element, "sf:geometry/sf:size/@sfa:h"))
+                    picture.natural_width = int(_xpa(media_element, "sf:geometry/sf:naturalSize/@sfa:w"))
+                    picture.natural_height = int(_xpa(media_element, "sf:geometry/sf:naturalSize/@sfa:h"))
+                    picture.rotate_angle = _xpa(media_element, "sf:geometry/sf:angle")
+                    picture.keynote_path = self.keynote_path
+                    self._pictures.append(picture)
+                    break
 
     def __populate_movies(self):
         """ Get the movie data out of the Keynote file and put it into
@@ -275,6 +287,19 @@ class Keynote(object):
         if not self.__slides:
             self.__populate_slides()
         return self.__slides
+
+    @property
+    def pictures(self):
+        """
+        This is a listing of all pictures on every slide
+        """
+        #TODO: How should I handle multiple pictures?  Should this cache?
+        # We are calling it before everything is finished parsing so maybe we shouldn't cache.
+        pictures = []
+        for slide in self.__slides:
+            for picture in slide._pictures:
+                pictures.append(picture)
+        return pictures
 
     def __populate_slides(self):
         slide_roots = _xp(self.doc.getroot(), "//key:slide ")
