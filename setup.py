@@ -10,8 +10,6 @@ setup(name = 'python-keynote',
       license = 'MIT',
       author = 'Paul Hildebrandt',
       author_email = 'paul_hildebrandt@yahoo.com',
-      packages = ['keynote_api'],
-
-      install_requires=["lxml"],
-
+      py_modules = ['keynote_api'],
+      requires=["lxml"],
      )
